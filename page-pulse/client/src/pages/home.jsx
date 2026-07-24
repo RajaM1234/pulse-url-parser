@@ -1,6 +1,9 @@
 import { useState } from "react";
 import SearchBar from "../components/searchBar.jsx";
 import ReportCard from "../components/reportCard.jsx";
+import Loader from "../components/loader.jsx";
+import ErrorCard from "../components/errorCard.jsx";
+
 const Home = () => {
     const [report, setReport] = useState(null);
     const [error, setError] = useState("");
@@ -19,7 +22,7 @@ const Home = () => {
 
             {loading && <p>Loading...</p>}
 
-            {error && <p>{error}</p>}
+            {error && <ErrorCard message={error} />}
 
             {report && <ReportCard report={report} />}
         </div>
