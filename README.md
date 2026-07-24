@@ -117,6 +117,9 @@ https://pulse-url-parser.onrender.com
 - Export analysis results
 
 ---
+## 🤖 AI Usage
+
+AI tools (ChatGPT) were used to assist with brainstorming, debugging, improving documentation, and resolving deployment issues. All implementation, testing, integration, verification, and final project decisions were completed and reviewed by me.
 
 ## 👨‍💻 Author
 
