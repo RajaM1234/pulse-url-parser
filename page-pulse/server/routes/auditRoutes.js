@@ -3,6 +3,6 @@ const router = express.Router();
 
 const { auditWebsite } = require("../controllers/auditController");
 
-router.post("/audit", auditWebsite);
+router.post("/", auditWebsite);
 
 module.exports = router;
