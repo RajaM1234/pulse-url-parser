@@ -1,5 +1,5 @@
 const axios = require("axios");
-const cheerio = require("cheerio");
+const analyzePage = require("../utils/pageAnalyzer");
 
 const auditWebsite = async (req, res) => {
     try {
@@ -13,7 +13,7 @@ const auditWebsite = async (req, res) => {
             });
         }
 
-        // Validate URL format
+        // Validate URL
         try {
             new URL(url);
         } catch (err) {
@@ -35,36 +35,47 @@ const auditWebsite = async (req, res) => {
         // Stop timer
         const endTime = Date.now();
         const responseTime = endTime - startTime;
-        const html = response.data;
-        const $ = cheerio.load(html);
 
-        const title = $('title').text();
-        const headingCount = $('h1, h2, h3, h4, h5, h6').length;
-        const paraCount = $('p').length;
-        const linkCount = $('a').length;
-        const imageCount = $('img').length;
+        // Check if response is HTML
+        const contentType = response.headers["content-type"];
 
-        // Metadta title length
-        const metaTitle = $('meta[name="title"]').attr('content') || $('title').text();
+        if (!contentType || !contentType.includes("text/html")) {
+            return res.status(400).json({
+                success: false,
+                message: "URL does not contain an HTML page."
+            });
+        }
 
-        // Meta description length
-        const metaDescription = $('meta[name="description"]').attr('content') || $('meta[property="og:description"]').attr('content');
-        // Return basic audit data
+        // Analyze HTML
+        const report = analyzePage(response.data);
+
+        // Return report
         return res.status(200).json({
             success: true,
             status: response.status,
             responseTime: `${responseTime} ms`,
-            title,
-            headingCount,
-            paraCount,
-            linkCount,
-            imageCount
+            ...report
         });
 
     } catch (error) {
+
+        if (error.code === "ECONNABORTED") {
+            return res.status(408).json({
+                success: false,
+                message: "Request timed out."
+            });
+        }
+
+        if (error.code === "ENOTFOUND") {
+            return res.status(404).json({
+                success: false,
+                message: "Website not found."
+            });
+        }
+
         return res.status(500).json({
             success: false,
-            message: "Internal Server Error",
+            message: "Something went wrong.",
             error: error.message
         });
     }
