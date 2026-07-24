@@ -86,3 +86,5 @@ npm test
 ## 👨‍💻 Author
 
 **M Raja**
+
+Computer Science undergraduate passionate about Full Stack Development, DSA, and building practical web applications.
